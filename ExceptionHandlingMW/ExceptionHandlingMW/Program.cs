@@ -3,6 +3,11 @@ using ExceptionHandlingMW;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.ConfigureAppConfiguration((context, builder) =>
+{
+    //builder.Sources.Clear();   // This will clear all default spp setting files
+    builder.AddJsonFile("MyConfic.json", false);
+});
 // Add services to the container.
 
 builder.Services.AddControllers();

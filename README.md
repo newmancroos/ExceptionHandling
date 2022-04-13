@@ -49,3 +49,43 @@ There are three type of middleware
         }
 
 - In the Middleware method we can inject dependency thru constrctors but in Conventional middleware we need to inject in the InvokeAsync method after that context.
+
+Note:
+  * Order of the configuration
+        - Appsettings.json
+        - Appsetting<Environment>.json
+        - SystemVariable
+        - command line
+        -Secreet manager
+              --- user-secrets init    --- this will initialize secret manager for the project
+              ---- MyApi:ApiKey will be there in the appsetting but not value
+              --- dotnet user-secret set "MyApi:ApiKey" "ApiKey Value here"
+              ---- In visual studio right click the project and select Manage User secret is th UI to mange secret.
+              ---- User Secret are not secure so in production we can use Azure Keywalt 
+
+              --- We can add pur own configuration file
+
+                builder.Host.ConfigureAppConfiguration((context, builder) =>
+                {
+                    //builder.Sources.Clear();   // This will clear all default spp setting files
+                    builder.AddJsonFile("MyConfic.json", false);
+
+                    var inMemory = new Dictionary<string,string>
+                    {
+                        {"MyKey", "From In Memory"}
+                    };
+                    builder.AddInMemoryCollection(inMemory);
+                }); 
+                -- Order of the config added to the builder is importent
+                -- Since we added this file as last so it will be the high priority and key-value on this file will be overrite all other app setting files
+    
+  * Reading a configuration value
+
+-  var apiOptions = new MyApiOoptions();
+   Configuraton.GetSection("MyApi").Bind(apiOptions);
+
+- var apiOptions = Configure.GetSection("MyApi).Get<MyApiOptions>();
+
+- services.Configure<MyApiOptions>(Configuration.GetSection("MyApi"));
+        ---- We can inject MyApiOptions to any class now
+
