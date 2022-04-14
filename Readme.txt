@@ -89,3 +89,64 @@ Note:
 - services.Configure<MyApiOptions>(Configuration.GetSection("MyApi"));
         ---- We can inject MyApiOptions to any class now
 
+
+
+
+Model Bindings
+-------------
+
+- In a controller we can use a property as controller method parameter and we can use binding
+
+ex.
+
+[ApiCOntroller]
+[Route("[controller]")]
+public class UserController : ControllerBase
+{
+
+    [BindingProperty(SupportsGet = true)] 
+    public bool IsTest {get;set;}
+
+    [HttpGet("{id"})]
+    public string Get(int id)
+    {
+        return $"Id = {id} and IsTest = {IsTest}";
+    }
+    //We can call this end point http://localhost:1233/user/id?IsTest=true
+
+}
+
+- We can use BidProperty in the class level
+
+[ApiCOntroller]
+[Route("[controller]")]
+[BindingProperties(SupportsGet = true)] 
+public class UserController : ControllerBase
+{
+    public bool IsTest {get;set;}
+
+    [HttpGet("{id"})]
+    public string Get(int id)
+    {
+        return $"Id = {id} and IsTest = {IsTest}";
+    }
+    //We can call this end point http://localhost:1233/user/id?IsTest=true
+}
+
+-- We can change the property name in the BindingProperty
+[ApiCOntroller]
+[Route("[controller]")]
+
+public class UserController : ControllerBase
+{
+    [BindingProperty(SupportsGet = true, Name="wanttotest")] 
+    public bool IsTest {get;set;}
+
+    [HttpGet("{id"})]
+    public string Get(int id)
+    {
+        return $"Id = {id} and IsTest = {IsTest}";
+    }
+    //We can call this end point http://localhost:1233/user/id?wanttotest=true
+}
+
